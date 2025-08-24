@@ -1,0 +1,10 @@
+[Unit]
+Description=nix mount setup
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "mkdir -p /tmp/{nix-store,nix-store-work} && cp -r /nix/store/* /tmp/nix-store/"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

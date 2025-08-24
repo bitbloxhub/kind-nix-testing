@@ -1,0 +1,9 @@
+FROM docker.io/kindest/node:v1.33.2
+RUN curl -sSf -L https://install.lix.systems/lix | sh -s -- install --no-confirm
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+RUN nix profile install github:pdtpartners/nix-snapshotter?ref=refs/tags/v0.2.2
+COPY ./nix-snapshotter-containerd.toml /etc/containerd/config.toml
+COPY ./nix-mount-setup.service /etc/systemd/system/nix-mount-setup.service
+COPY ./nix-store.mount /etc/systemd/system/nix-store.mount
+COPY ./nix-snapshotter.service /etc/systemd/system/nix-snapshotter.service
+RUN systemctl enable nix-mount-setup nix-store.mount nix-snapshotter

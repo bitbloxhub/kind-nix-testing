@@ -1,0 +1,15 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kind-nix-testing
+nodes:
+- role: control-plane
+  image: localhost/kind-nix-snapshotter
+  extraMounts:
+    - hostPath: /nix/store/
+      containerPath: /nix/.ro-store/
+      readOnly: true
+  kubeadmConfigPatches:
+  - |
+    kind: KubeletConfiguration
+    imageServiceEndpoint: unix:///run/nix-snapshotter/nix-snapshotter.sock
+
