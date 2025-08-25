@@ -1,6 +1,6 @@
 [Unit]
 Description=Overlay for /nix/store
-After=nix-mount-setup.service
+Requires=nix-mount-setup.service
 
 [Mount]
 What=overlay

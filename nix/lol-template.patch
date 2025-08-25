@@ -1,0 +1,36 @@
+From 8ce06fa2cb914fa0fde85effac676be7a85e1afc Mon Sep 17 00:00:00 2001
+From: bitbloxhub <45184892+bitbloxhub@users.noreply.github.com>
+Date: Mon, 25 Aug 2025 17:41:30 +0000
+Subject: [PATCH] lol template
+
+---
+ templates/repo/header.tmpl | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/templates/repo/header.tmpl b/templates/repo/header.tmpl
+index b6cbfc7283..045bd792aa 100644
+--- a/templates/repo/header.tmpl
++++ b/templates/repo/header.tmpl
+@@ -94,7 +94,7 @@
+ 			<div class="overflow-menu-items">
+ 				{{if .Permission.CanRead $.UnitTypeCode}}
+ 					<a class="{{if .PageIsViewCode}}active {{end}}item" href="{{.RepoLink}}{{if and (ne .BranchName .Repository.DefaultBranch) (not $.PageIsWiki)}}/src/{{.BranchNameSubURL}}{{end}}">
+-						{{svg "octicon-code"}} {{ctx.Locale.Tr "repo.code"}}
++						{{svg "octicon-code"}} {{ctx.Locale.Tr "repo.code"}} AAAAAA
+ 					</a>
+ 				{{end}}
+ 
+@@ -107,6 +107,10 @@
+ 					</a>
+ 				{{end}}
+ 
++					<a class="item" href="https://gerrit.lix.systems/q/project:lix">
++						Demo
++					</a>
++
+ 				{{if .Permission.CanRead $.UnitTypeExternalTracker}}
+ 					<a class="{{if .PageIsIssueList}}active {{end}}item" href="{{.RepoExternalIssuesLink}}" target="_blank" rel="noopener noreferrer">
+ 						{{svg "octicon-link-external"}} {{ctx.Locale.Tr "repo.issues"}}
+-- 
+2.43.0
+
