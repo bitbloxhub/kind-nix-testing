@@ -25,7 +25,7 @@
         metadata.namespace = "flux-system";
         spec = {
           interval = "1m0s";
-          timeout = "30s";
+          timeout = "1m0s";
           chart.spec = {
             chart = "forgejo";
             version = "14.0.0";
@@ -38,13 +38,12 @@
             let
               forgejo = pkgs.forgejo.overrideAttrs (old: {
                 doCheck = false;
-                patches = old.patches ++ [
-                  ./lol-template.patch
-                ];
+                patches = old.patches ++ (builtins.map (x: ./patches/${x}) (builtins.attrNames (builtins.readDir ./patches)));
               });
             in
             {
               namespaceOverride = "forgejo";
+              gitea.config.queue.TYPE = "channel";
               image.fullOverride = "nix:0${
                 inputs.nix-snapshotter.packages.nix-snapshotter.buildImage {
                   name = "forgejo";

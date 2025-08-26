@@ -1,0 +1,32 @@
+From 135ed4e6cc37de7ea5734e1cf0a358b9ad78adfd Mon Sep 17 00:00:00 2001
+From: bitbloxhub <45184892+bitbloxhub@users.noreply.github.com>
+Date: Tue, 26 Aug 2025 14:33:55 +0000
+Subject: [PATCH 2/2] no pr in header
+
+---
+ templates/repo/header.tmpl | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/templates/repo/header.tmpl b/templates/repo/header.tmpl
+index 045bd792aa..3a4c134f02 100644
+--- a/templates/repo/header.tmpl
++++ b/templates/repo/header.tmpl
+@@ -117,15 +117,6 @@
+ 					</a>
+ 				{{end}}
+ 
+-				{{if and .Repository.CanEnablePulls (.Permission.CanRead $.UnitTypePullRequests)}}
+-					<a class="{{if .PageIsPullList}}active {{end}}item" href="{{.RepoLink}}/pulls">
+-						{{svg "octicon-git-pull-request"}} {{ctx.Locale.Tr "repo.pulls"}}
+-						{{if .Repository.NumOpenPulls}}
+-							<span class="ui small label">{{CountFmt .Repository.NumOpenPulls}}</span>
+-						{{end}}
+-					</a>
+-				{{end}}
+-
+ 				{{if and (not .UnitProjectsGlobalDisabled) (.Permission.CanRead $.UnitTypeProjects)}}
+ 					<a href="{{.RepoLink}}/projects" class="{{if .IsProjectsPage}}active {{end}}item">
+ 						{{svg "octicon-project"}} {{ctx.Locale.Tr "repo.project"}}
+-- 
+2.43.0
+

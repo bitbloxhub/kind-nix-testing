@@ -1,7 +1,7 @@
 From 8ce06fa2cb914fa0fde85effac676be7a85e1afc Mon Sep 17 00:00:00 2001
 From: bitbloxhub <45184892+bitbloxhub@users.noreply.github.com>
 Date: Mon, 25 Aug 2025 17:41:30 +0000
-Subject: [PATCH] lol template
+Subject: [PATCH 1/2] lol template
 
 ---
  templates/repo/header.tmpl | 6 +++++-
