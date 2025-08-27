@@ -38,7 +38,8 @@
             let
               forgejo = pkgs.forgejo.overrideAttrs (old: {
                 doCheck = false;
-                patches = old.patches ++ (builtins.map (x: ./patches/${x}) (builtins.attrNames (builtins.readDir ./patches)));
+                patches =
+                  old.patches ++ (builtins.map (x: ./patches/${x}) (builtins.attrNames (builtins.readDir ./patches)));
               });
             in
             {
