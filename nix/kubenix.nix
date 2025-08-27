@@ -61,6 +61,14 @@
                           url = "https://github.com/tektoncd/operator/releases/download/v0.77.0/release.yaml";
                           hash = "sha256-S5rYz8dw3WIFAlPDPzZU3o3LV2qLIeMRGf5N4773ltQ=";
                         })
+                        (pkgs.fetchurl {
+                          url = "https://github.com/grafana/alloy-operator/releases/download/alloy-operator-0.3.9/collectors.grafana.com_alloy.yaml";
+                          hash = "sha256-sj7vPTr4Naix3eESQGHHNKnsi5Ij+1wWKtNG3zkDhJM=";
+                        })
+                        (pkgs.fetchurl {
+                          url = "https://github.com/grafana/grafana-operator/releases/latest/download/kustomize-cluster_scoped.yaml";
+                          hash = "sha256-I+vgoWKA34lENBlbMZF3GBG7XAJTtsmbalwbxC5Tkvo=";
+                        })
                       ]
                   )
                 )
