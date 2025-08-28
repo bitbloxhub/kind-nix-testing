@@ -1,0 +1,1 @@
+Based on the dashboards from [[https://github.com/fluxcd/flux2-monitoring-example/tree/main/monitoring/configs/dashboards]]

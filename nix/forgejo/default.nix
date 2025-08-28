@@ -45,6 +45,8 @@
             {
               namespaceOverride = "forgejo";
               gitea.config.queue.TYPE = "channel";
+              gitea.config.server.ENABLE_PPROF = true;
+              gitea.metrics.enabled = true;
               image.fullOverride = "nix:0${
                 inputs.nix-snapshotter.packages.nix-snapshotter.buildImage {
                   name = "forgejo";
