@@ -137,118 +137,26 @@
             in
             {
               loki = {
-                structuredConfig = {
-                  # FIXME: this is being randomly set to true sometimes
-                  auth_enabled = false;
-                  bloom_build.enabled = false;
-                  bloom_gateway.enabled = false;
-                  chunk_store_config = {
-                    chunk_cache_config = {
-                      background = {
-                        writeback_buffer = 500000;
-                        writeback_goroutines = 1;
-                        writeback_size_limit = "500MB";
-                      };
-                      default_validity = "0s";
-                      memcached = {
-                        batch_size = 4;
-                        parallelism = 5;
-                      };
-                      memcached_client = {
-                        addresses = "dnssrvnoa+_memcached-client._tcp.loki-loki-chunks-cache.loki.svc";
-                        consistent_hash = true;
-                        max_idle_conns = 72;
-                        timeout = "2000ms";
-                      };
+                schemaConfig.configs = [
+                  {
+                    from = "2024-04-01";
+                    store = "tsdb";
+                    object_store = "s3";
+                    schema = "v13";
+                    index = {
+                      prefix = "loki_index_";
+                      period = "24h";
                     };
-                  };
-                  common = {
-                    compactor_grpc_address = "loki-backend.loki.svc:9095";
-                    path_prefix = "/var/loki";
-                    replication_factor = 3;
-                    storage.s3 = {
-                      access_key_id = "root-user";
-                      bucketnames = "chunks";
-                      endpoint = "loki-loki-minio.loki.svc:9000";
-                      insecure = true;
-                      s3forcepathstyle = true;
-                      secret_access_key = "supersecretpassword";
-                    };
-                  };
-                  frontend = {
-                    scheduler_address = "";
-                    tail_proxy_url = "";
-                  };
-                  frontend_worker.scheduler_address = "";
-                  index_gateway.mode = "simple";
-                  ingester.chunk_encoding = "snappy";
-                  limits_config = {
-                    allow_structured_metadata = true;
-                    max_cache_freshness_per_query = "10m";
-                    query_timeout = "300s";
-                    reject_old_samples = true;
-                    reject_old_samples_max_age = "168h";
-                    split_queries_by_interval = "15m";
-                    volume_enabled = true;
-                  };
-                  memberlist.join_members = ["loki-memberlist"];
-                  pattern_ingester.enabled = true;
-                  querier.max_concurrent = 4;
-                  query_range = {
-                    align_queries_with_step = true;
-                    cache_results = true;
-                    results_cache.cache = {
-                      background = {
-                        writeback_buffer = 500000;
-                        writeback_goroutines = 1;
-                        writeback_size_limit = "500MB";
-                      };
-                      default_validity = "12h";
-                      memcached_client = {
-                        addresses = "dnssrvnoa+_memcached-client._tcp.loki-loki-chunks-cache.loki.svc";
-                        consistent_hash = true;
-                        timeout = "500ms";
-                        update_interval = "1m";
-                      };
-                    };
-                  };
-                  ruler = {
-                    storage.s3.bucketnames = "ruler";
-                    storage.type = "s3";
-                    wal.dir = "/var/loki/ruler-wal";
-                  };
-                  runtime_config.file = "/etc/loki/runtime-config/runtime-config.yaml";
-                  schema_config.configs = [
-                    {
-                      from = "2024-04-01";
-                      store = "tsdb";
-                      object_store = "s3";
-                      schema = "v13";
-                      index = {
-                        prefix = "loki_index_";
-                        period = "24h";
-                      };
-                    }
-                  ];
-                  server = {
-                    grpc_listen_port = 9095;
-                    http_listen_port = 3100;
-                    http_server_read_timeout = "600s";
-                    http_server_write_timeout = "600s";
-                  };
-                  storage_config = {
-                    bloom_shipper.working_directory = "/var/loki/data/bloomshipper";
-                    boltdb_shipper.index_gateway_client.server_address = "dns+loki-backend-headless.loki.svc:9095";
-                    hedging = {
-                      at = "250ms";
-                      max_per_second = 20;
-                      up_to = 3;
-                    };
-                    tsdb_shipper.index_gateway_client.server_address = "dns+loki-backend-headless.loki.svc:9095";
-                    use_thanos_objstore = false;
-                  };
-                  tracing.enabled = false;
+                  }
+                ];
+                ingester.chunk_encoding = "snappy";
+                querier.max_concurrent = 4;
+                pattern_ingester.enabled = true;
+                limits_config = {
+                  allow_structured_metadata = true;
+                  volume_enabled = true;
                 };
+                auth_enabled = false;
               };
               deploymentMode = "SimpleScalable";
               backend.replicas = 2;
