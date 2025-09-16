@@ -519,7 +519,7 @@
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(process_cpu_seconds_total{namespace=\"$namespace\",pod_name=~\".*-controller-.*\"}[1m])",
+          "expr": "rate(container_cpu_usage_seconds_total{namespace=\"$namespace\",pod=~\".*-controller-.*\"}[1m])",
           "interval": "",
           "legendFormat": "{{pod}}",
           "refId": "A"
@@ -614,7 +614,7 @@
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\",container_name!=\"POD\",container_name!=\"\",pod_name=~\".*-controller-.*\"}) by (pod)",
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\",container!=\"POD\",container!=\"\",pod=~\".*-controller-.*\"}) by (pod)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{pod}}",

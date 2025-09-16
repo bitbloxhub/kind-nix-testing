@@ -258,6 +258,46 @@
               forward_to = [loki.write.endpoint.receiver]
             }
 
+            discovery.kubernetes "nodes" {
+              role = "node"
+            }
+
+            prometheus.scrape "nodes_metrics" {
+              targets = discovery.kubernetes.nodes.targets
+              forward_to = [prometheus.remote_write.mimir.receiver]
+              scheme = "https"
+              bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+              tls_config {
+                ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                insecure_skip_verify = true
+              }
+            }
+
+            discovery.relabel "nodes_cadvisor" {
+              targets = discovery.kubernetes.nodes.targets
+              rule {
+                target_label = "__address__"
+                replacement  = "kubernetes.default.svc.cluster.local:443"
+              }
+              rule {
+                source_labels = ["__meta_kubernetes_node_name"]
+                regex         = "(.+)"
+                replacement   = "/api/v1/nodes/$\{1}/proxy/metrics/cadvisor"
+                target_label  = "__metrics_path__"
+              }
+            }
+
+            prometheus.scrape "nodes_cadvisor" {
+              targets = discovery.relabel.nodes_cadvisor.output
+              forward_to = [prometheus.remote_write.mimir.receiver]
+              scheme = "https"
+              bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+              tls_config {
+                ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                insecure_skip_verify = true
+              }
+            }
+
             loki.write "endpoint" {
               endpoint {
                   url = "http://loki-loki-gateway.loki.svc:80/loki/api/v1/push"
