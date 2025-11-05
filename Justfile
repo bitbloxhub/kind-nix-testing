@@ -7,7 +7,7 @@ dev:
 		kind create cluster --config=kind.yaml
 	}
 	if (podman inspect -f '{{{{.State.Running}}' kind-nix-testing-registry | complete).stdout != "true\n" {
-		podman run -d --restart=always -p "127.0.0.1:24921:5000" --network bridge --name "kind-nix-testing-registry" ghcr.io/project-zot/zot-linux-amd64
+		podman run --replace -d --restart=always -p "127.0.0.1:24921:5000" --network bridge --name "kind-nix-testing-registry" ghcr.io/project-zot/zot-linux-amd64
 	}
 	if (podman inspect -f="{{{{json .NetworkSettings.Networks.kind}}" "kind-nix-testing-registry" | complete).stdout == "null\n" {
 		podman network connect "kind" "kind-nix-testing-registry"

@@ -47,6 +47,7 @@
               nushell
               yq-go
               kubectl
+              podman
               kind
               tilt
               fluxcd

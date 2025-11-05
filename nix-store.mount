@@ -1,9 +1,0 @@
-[Unit]
-Description=Overlay for /nix/store
-Requires=nix-mount-setup.service
-
-[Mount]
-What=overlay
-Where=/nix/store/
-Type=overlay
-Options=lowerdir=/nix/.ro-store/,upperdir=/tmp/nix-store,workdir=/tmp/nix-store-work

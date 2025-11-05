@@ -1,6 +1,7 @@
 [Unit]
 Description=nix snapshotter
 After=network.target
+After=nix-store-mount.service
 Requires=nix-store.mount
 Before=containerd.service
 Before=kubelet.service

@@ -1,0 +1,9 @@
+[Unit]
+Description=Overlay for /nix/store
+After=nix-mount-setup.service
+Requires=nix-mount-setup.service
+
+[Service]
+Type=oneshot
+ExecStart=mount -t overlay overlay -o lowerdir=/nix/.ro-store/,upperdir=/tmp/nix-store,workdir=/tmp/nix-store-work /nix/store/
+RemainAfterExit=yes

@@ -196,7 +196,7 @@
           timeout = "1m0s";
           chart.spec = {
             chart = "grafana-operator";
-            version = "v5.19.4";
+            version = "v5.20.0";
             sourceRef = {
               kind = "HelmRepository";
               name = "grafana";
