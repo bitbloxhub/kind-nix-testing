@@ -15,7 +15,7 @@ local_resource(
 		"ghcr.io/project-zot/zot-linux-amd64",
 	]),
 )
-local_resource("flux-operator", "kubectl apply -f https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.28.0/install.yaml")
+local_resource("flux-operator", "kubectl apply -f https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.33.0/install.yaml")
 local_resource("flux-operator-setup", """
 	kubectl wait -n flux-system --for condition=established --timeout=60s crd/fluxinstances.fluxcd.controlplane.io
 	rm -f /tmp/kind-nix-testing-flux-operator-setup.yaml

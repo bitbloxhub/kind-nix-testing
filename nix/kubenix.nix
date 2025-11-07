@@ -46,12 +46,12 @@
                       )
                       [
                         (pkgs.fetchurl {
-                          url = "https://github.com/fluxcd/flux2/releases/download/v2.6.4/install.yaml";
-                          hash = "sha256-fNBDqCNmZye0ud5Ag0YUiyh0G0frCz5CN6tyWdStOrg=";
+                          url = "https://github.com/fluxcd/flux2/releases/download/v2.7.3/install.yaml";
+                          hash = "sha256-7CZLGm/M4P+qUQXKSea9qDqloyqkhWAYdBGttybL9lY=";
                         })
                         (pkgs.fetchurl {
-                          url = "https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.28.0/install.yaml";
-                          hash = "sha256-O9nnOVBYF89bpP+x6VWHeG0FVQIrlzIovOOe0y4UeRQ=";
+                          url = "https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.33.0/install.yaml";
+                          hash = "sha256-QCDuEFDiRWGWapF2bcurX+KqGgGAwGLamM2vBMoa7x0=";
                         })
                         (pkgs.fetchurl {
                           url = "https://github.com/tektoncd/pipeline/releases/download/v1.3.1/release.yaml";

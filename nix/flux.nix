@@ -15,7 +15,7 @@
       spec = {
         distribution = {
           registry = "ghcr.io/fluxcd";
-          version = "2.6.4";
+          version = "2.7.3";
         };
         sync = {
           kind = "OCIRepository";
@@ -44,6 +44,7 @@
       spec = {
         interval = "1m0s";
         path = "./";
+        wait = true;
         prune = true;
         sourceRef = {
           kind = "OCIRepository";
@@ -65,7 +66,13 @@
     kubernetes.resources.kustomizations.apps = {
       metadata.namespace = "flux-system";
       spec = {
-        dependsOn = [ { name = "infra"; } ];
+        dependsOn = [ {
+          name = "infra";
+          readyExpr = ''
+            dep.status.conditions.exists(condition, condition.type == "Healthy") ||
+            dep.status.conditions.exists(condition, condition.message.contains("timeout waiting for: [Kustomization/flux-system/apps status: 'InProgress']"))
+          '';
+        } ];
         interval = "1m0s";
         path = "./";
         prune = true;
