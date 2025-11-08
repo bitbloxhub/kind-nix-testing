@@ -251,20 +251,66 @@
             }
           }
 
-          prometheus.remote_write "mimir" {
-            endpoint {
-              url = "http://mimir-mimir-distributed-nginx.mimir.svc:80/api/v1/push"
-            }
-          }
-
           prometheus.scrape "pods" {
             targets = discovery.relabel.pods.output
             forward_to = [prometheus.remote_write.mimir.receiver]
             scrape_interval = "10s"
           }
 
+          discovery.relabel "pod_logs" {
+            targets = discovery.kubernetes.pods.targets
+
+            rule {
+              action        = "replace"
+              source_labels = ["__meta_kubernetes_namespace"]
+              target_label  = "namespace"
+            }
+
+            rule {
+              action        = "replace"
+              source_labels = ["__meta_kubernetes_pod_name"]
+              target_label  = "pod"
+            }
+
+            rule {
+              action        = "replace"
+              source_labels = ["__meta_kubernetes_pod_container_name"]
+              target_label  = "container"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+              action = "replace"
+              target_label = "app"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+              action = "replace"
+              target_label = "job"
+              separator = "/"
+              replacement = "$1"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+              action = "replace"
+              target_label = "__path__"
+              separator = "/"
+              replacement = "/var/log/pods/*$1/*.log"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_id"]
+              action = "replace"
+              target_label = "container_runtime"
+              regex = "^(\\S+):\\/\\/.+$"
+              replacement = "$1"
+            }
+          }
+
           loki.source.kubernetes "pods" {
-            targets    = discovery.kubernetes.pods.targets
+            targets    = discovery.relabel.pod_logs.output
             forward_to = [loki.write.endpoint.receiver]
           }
 
@@ -308,6 +354,12 @@
               insecure_skip_verify = true
             }
             scrape_interval = "10s"
+          }
+
+          prometheus.remote_write "mimir" {
+            endpoint {
+              url = "http://mimir-mimir-distributed-nginx.mimir.svc:80/api/v1/push"
+            }
           }
 
           loki.write "endpoint" {

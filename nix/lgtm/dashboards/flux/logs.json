@@ -128,7 +128,7 @@
       "targets": [
         {
           "datasource": "${DS_LOKI}",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", stream=~\"$stream\", app =~\"$controller\"} | json | __error__!=\"JSONParserErr\" | level=~\"$level\" |= \"$query\" [$__interval]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", app =~\"$controller\"} | json | __error__!=\"JSONParserErr\" | level=~\"$level\" |= \"$query\" [$__interval]))",
           "instant": false,
           "legendFormat": "Log count",
           "range": true,
@@ -160,7 +160,7 @@
       "targets": [
         {
           "datasource": "${DS_LOKI}",
-          "expr": "{namespace=~\"$namespace\", stream=~\"$stream\", app =~\"$controller\"} | json | __error__!=\"JSONParserErr\" | level=~\"$level\" |= \"$query\"",
+          "expr": "{namespace=~\"$namespace\", app =~\"$controller\"} | json | __error__!=\"JSONParserErr\" | level=~\"$level\" |= \"$query\"",
           "refId": "A"
         }
       ],
@@ -273,27 +273,6 @@
         "name": "namespace",
         "options": [],
         "query": "label_values(namespace)",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "allValue": ".+",
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "${DS_LOKI}",
-        "definition": "label_values(stream)",
-        "hide": 0,
-        "includeAll": true,
-        "multi": true,
-        "name": "stream",
-        "options": [],
-        "query": "label_values(stream)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
