@@ -260,6 +260,7 @@
           prometheus.scrape "pods" {
             targets = discovery.relabel.pods.output
             forward_to = [prometheus.remote_write.mimir.receiver]
+            scrape_interval = "10s"
           }
 
           loki.source.kubernetes "pods" {
@@ -294,6 +295,7 @@
               replacement   = "/api/v1/nodes/''${1}/proxy/metrics/cadvisor"
               target_label  = "__metrics_path__"
             }
+            scrape_interval = "10s"
           }
 
           prometheus.scrape "nodes_cadvisor" {
@@ -305,12 +307,13 @@
               ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
               insecure_skip_verify = true
             }
+            scrape_interval = "10s"
           }
 
           loki.write "endpoint" {
             endpoint {
-                url = "http://loki-loki-gateway.loki.svc:80/loki/api/v1/push"
-                tenant_id = "local"
+              url = "http://loki-loki-gateway.loki.svc:80/loki/api/v1/push"
+              tenant_id = "local"
             }
           }
         '';
