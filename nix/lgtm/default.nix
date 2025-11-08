@@ -281,6 +281,7 @@
               ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
               insecure_skip_verify = true
             }
+            scrape_interval = "10s"
           }
 
           discovery.relabel "nodes_cadvisor" {
@@ -295,7 +296,6 @@
               replacement   = "/api/v1/nodes/''${1}/proxy/metrics/cadvisor"
               target_label  = "__metrics_path__"
             }
-            scrape_interval = "10s"
           }
 
           prometheus.scrape "nodes_cadvisor" {
