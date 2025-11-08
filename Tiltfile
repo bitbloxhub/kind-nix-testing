@@ -16,31 +16,11 @@ local_resource(
 	]),
 )
 local_resource("flux-operator", "kubectl apply -f https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.33.0/install.yaml")
-local_resource("flux-operator-setup", """
+local_resource("flux-setup", """
 	kubectl wait -n flux-system --for condition=established --timeout=60s crd/fluxinstances.fluxcd.controlplane.io
-	rm -f /tmp/kind-nix-testing-flux-operator-setup.yaml
-	touch /tmp/kind-nix-testing-infra-dev.yaml
-	touch /tmp/kind-nix-testing-apps-dev.yaml
-	flux push artifact oci://localhost:24921/kind-nix-testing-flux-infra:latest --insecure-registry --path /tmp/kind-nix-testing-infra-dev.yaml --source=local --revision=latest
-	flux push artifact oci://localhost:24921/kind-nix-testing-flux-apps:latest --insecure-registry --path /tmp/kind-nix-testing-apps-dev.yaml --source=local --revision=latest
-	nix build --log-format raw --out-link /tmp/kind-nix-testing-flux-operator-setup.yaml .#flux-operator-setup
-	kubectl apply -f /tmp/kind-nix-testing-flux-operator-setup.yaml
+	nix build --log-format raw --out-link /tmp/kind-nix-testing-kustomization-sources-link .#kustomization-sources
+	mkdir -p /tmp/kind-nix-testing-kustomization-sources/
+	cp --no-preserve mode,ownership -rf /tmp/kind-nix-testing-kustomization-sources-link/* /tmp/kind-nix-testing-kustomization-sources/
+	flux push artifact oci://localhost:24921/kind-nix-testing-flux:latest --insecure-registry --path /tmp/kind-nix-testing-kustomization-sources --source=local --revision=latest
+	kubectl apply -f /tmp/kind-nix-testing-kustomization-sources/flux-setup/flux-setup.yaml
 """)
-local_resource("flux-infra", """
-	kubectl wait -n flux-system fluxinstances/flux --for=condition=ready --timeout=10m
-	rm -f /tmp/kind-nix-testing-infra.yaml
-	nix build --log-format raw .#flux-resources --out-link /tmp/kind-nix-testing-infra-link.yaml
-	cp /tmp/kind-nix-testing-infra-link.yaml /tmp/kind-nix-testing-infra.yaml
-	flux push artifact oci://localhost:24921/kind-nix-testing-flux-infra:latest --insecure-registry --path /tmp/kind-nix-testing-infra.yaml --source=local --revision=latest
-	flux reconcile source oci flux-system
-	flux reconcile kustomization infra
-""")
-local_resource("flux-apps", """
-	kubectl wait -n flux-system kustomizations/infra --for=condition=ready --timeout=10m
-	rm -f /tmp/kind-nix-testing-apps.yaml
-	nix build --log-format raw .#kubernetes-sorted --out-link /tmp/kind-nix-testing-apps-link.yaml
-	cp /tmp/kind-nix-testing-apps-link.yaml /tmp/kind-nix-testing-apps.yaml
-	flux push artifact oci://localhost:24921/kind-nix-testing-flux-apps:latest --insecure-registry --path /tmp/kind-nix-testing-apps.yaml --source=local --revision=latest
-	flux reconcile source oci apps
-	flux reconcile kustomization apps
-""", deps=["flake.nix"])

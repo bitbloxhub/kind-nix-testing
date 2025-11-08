@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.modules.kubenix.default = {
+  flake.modules.kubenix.tekton-goodbye = {
     kubernetes.resources.tasks.goodbye = {
       metadata.namespace = "default";
       spec = {

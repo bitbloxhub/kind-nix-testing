@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.modules.kubenix.default = {
+  flake.modules.kubenix.tekton = {
     kubernetes.resources.gitrepositories.tekton-operator = {
       metadata.namespace = "flux-system";
       spec = {

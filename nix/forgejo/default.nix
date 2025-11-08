@@ -4,8 +4,8 @@
   ...
 }:
 {
-  flake.modules.kubenix.default =
-    { pkgs, inputs, ... }:
+  flake.modules.kubenix.forgejo =
+    { pkgs, inputs', ... }:
     {
       kubernetes.resources.namespaces.forgejo = {
         metadata.annotations.apply-order = "100";
@@ -48,7 +48,7 @@
               gitea.config.server.ENABLE_PPROF = true;
               gitea.metrics.enabled = true;
               image.fullOverride = "nix:0${
-                inputs.nix-snapshotter.packages.nix-snapshotter.buildImage {
+                inputs'.nix-snapshotter.packages.nix-snapshotter.buildImage {
                   name = "forgejo";
                   resolvedByNix = true;
                   config.entrypoint = [

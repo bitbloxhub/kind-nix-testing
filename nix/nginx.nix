@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.modules.kubenix.default = {
+  flake.modules.kubenix.nginx = {
     kubernetes.resources.pods.nginx = {
       metadata.namespace = "default";
       spec.containers = [

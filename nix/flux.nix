@@ -1,11 +1,133 @@
 {
   lib,
   inputs,
+  self,
   ...
 }:
 {
   flake.modules.kubenix.default = {
-    kubernetes.resources.fluxinstances.flux = {
+    options.kustomization = {
+      wait = lib.mkOption {
+        type = lib.types.boolean;
+        default = true;
+      };
+      dependsOn = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              name = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              namespace = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+              readyExpr = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+            };
+          }
+        );
+        default = [
+          {
+            name = "flux-system";
+          }
+        ];
+      };
+      healthChecks = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              apiVersion = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+              kind = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              name = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              namespace = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+            };
+          }
+        );
+        default = [ ];
+      };
+      healthCheckExprs = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              apiVersion = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = null;
+              };
+              kind = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              current = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              inProgress = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+              failed = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+            };
+          }
+        );
+        default = [ ];
+      };
+    };
+  };
+
+  flake.modules.kubenix.flux-system =
+    {
+      self',
+      ...
+    }:
+    {
+      config.kubernetes.resources.kustomizations = builtins.listToAttrs (
+        builtins.map
+          (name: {
+            name = name;
+            value = {
+              metadata.namespace = "flux-system";
+              spec = {
+                dependsOn = self'.packages.kustomization-sources.${name}.config.kustomization.dependsOn;
+                healthChecks = self'.packages.kustomization-sources.${name}.config.kustomization.healthChecks;
+                interval = "1m0s";
+                path = "./${name}";
+                prune = true;
+                sourceRef = {
+                  kind = "OCIRepository";
+                  name = "flux-system";
+                };
+              };
+            };
+          })
+          (
+            builtins.filter (name: name != "default" && name != "flux-system") (
+              builtins.attrNames self.modules.kubenix
+            )
+          )
+      );
+    };
+
+  flake.modules.kubenix.flux-setup = {
+    config.kubernetes.resources.fluxinstances.flux = {
       metadata.namespace = "flux-system";
       metadata.annotations = {
         "fluxcd.controlplane.io/reconcileEvery" = "1m";
@@ -19,9 +141,9 @@
         };
         sync = {
           kind = "OCIRepository";
-          url = "oci://kind-nix-testing-registry:5000/kind-nix-testing-flux-infra";
+          url = "oci://kind-nix-testing-registry:5000/kind-nix-testing-flux";
           ref = "latest";
-          path = ".";
+          path = "./flux-system";
         };
         kustomize.patches = [
           {
@@ -35,51 +157,6 @@
             };
           }
         ];
-      };
-    };
-
-    kubernetes.resources.kustomizations.infra = {
-      metadata.namespace = "flux-system";
-      metadata.annotations.apply-order = "100";
-      spec = {
-        interval = "1m0s";
-        path = "./";
-        wait = true;
-        prune = true;
-        sourceRef = {
-          kind = "OCIRepository";
-          name = "flux-system";
-        };
-      };
-    };
-
-    kubernetes.resources.ocirepositories.apps = {
-      metadata.namespace = "flux-system";
-      spec = {
-        interval = "1m0s";
-        insecure = true;
-        url = "oci://kind-nix-testing-registry:5000/kind-nix-testing-flux-apps";
-        ref.tag = "latest";
-      };
-    };
-
-    kubernetes.resources.kustomizations.apps = {
-      metadata.namespace = "flux-system";
-      spec = {
-        dependsOn = [ {
-          name = "infra";
-          readyExpr = ''
-            dep.status.conditions.exists(condition, condition.type == "Healthy") ||
-            dep.status.conditions.exists(condition, condition.message.contains("timeout waiting for: [Kustomization/flux-system/apps status: 'InProgress']"))
-          '';
-        } ];
-        interval = "1m0s";
-        path = "./";
-        prune = true;
-        sourceRef = {
-          kind = "OCIRepository";
-          name = "apps";
-        };
       };
     };
   };
