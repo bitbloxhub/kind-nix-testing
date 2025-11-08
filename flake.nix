@@ -15,6 +15,9 @@
     nix-snapshotter.url = "github:pdtpartners/nix-snapshotter";
     nix-snapshotter.inputs.nixpkgs.follows = "nixpkgs";
     nix-snapshotter.inputs.flake-parts.follows = "flake-parts";
+
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -30,30 +33,5 @@
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./nix)
       ];
-      perSystem =
-        {
-          config,
-          self',
-          inputs',
-          pkgs,
-          system,
-          ...
-        }:
-        {
-          devShells.default = pkgs.mkShell {
-            packages = with pkgs; [
-              nixfmt-rfc-style
-              just
-              nushell
-              yq-go
-              kubectl
-              podman
-              kind
-              tilt
-              fluxcd
-              tektoncd-cli
-            ];
-          };
-        };
     };
 }

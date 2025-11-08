@@ -1,11 +1,10 @@
 {
-  lib,
-  inputs,
-  ...
-}:
-{
   flake.modules.kubenix.forgejo =
-    { pkgs, inputs', ... }:
+    {
+      pkgs,
+      inputs',
+      ...
+    }:
     {
       kubernetes.resources.namespaces.forgejo = {
         metadata.annotations.apply-order = "100";

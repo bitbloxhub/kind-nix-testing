@@ -1,11 +1,10 @@
 {
   lib,
-  inputs,
   ...
 }:
 {
   flake.modules.kubenix.lgtm = {
-    imports = (
+    imports =
       builtins.map
         (path: {
           kubernetes.resources.grafanadashboards.${"${builtins.elemAt path 0}-${builtins.replaceStrings [ ".json" ] [ "" ] (builtins.elemAt path 1)}"} =
@@ -15,7 +14,7 @@
                 instanceSelector = {
                   matchLabels.dashboards = "grafana";
                 };
-                folder = (builtins.elemAt path 0);
+                folder = builtins.elemAt path 0;
                 json = builtins.readFile ./${builtins.elemAt path 0}/${builtins.elemAt path 1};
               };
             };
@@ -28,7 +27,6 @@
               )
             )
           )
-        )
-    );
+        );
   };
 }

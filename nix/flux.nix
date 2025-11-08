@@ -1,6 +1,5 @@
 {
   lib,
-  inputs,
   self,
   ...
 }:
@@ -102,12 +101,12 @@
       config.kubernetes.resources.kustomizations = builtins.listToAttrs (
         builtins.map
           (name: {
-            name = name;
+            inherit name;
             value = {
               metadata.namespace = "flux-system";
               spec = {
-                dependsOn = self'.packages.kustomization-sources.${name}.config.kustomization.dependsOn;
-                healthChecks = self'.packages.kustomization-sources.${name}.config.kustomization.healthChecks;
+                inherit (self'.packages.kustomization-sources.${name}.config.kustomization) dependsOn;
+                inherit (self'.packages.kustomization-sources.${name}.config.kustomization) healthChecks;
                 interval = "1m0s";
                 path = "./${name}";
                 prune = true;

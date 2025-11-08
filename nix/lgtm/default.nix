@@ -1,9 +1,4 @@
 {
-  lib,
-  inputs,
-  ...
-}:
-{
   flake.modules.kubenix.lgtm-operators = {
     kubernetes.resources.namespaces.mimir = {
       metadata.annotations.apply-order = "100";
