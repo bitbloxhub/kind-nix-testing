@@ -223,7 +223,7 @@
         mounts.varlog = true;
         configMap.content = ''
           logging {
-            level  = "info"
+            level = "info"
             format = "logfmt"
           }
 
@@ -235,19 +235,21 @@
             targets = discovery.kubernetes.pods.targets
 
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_namespace"]
-              target_label  = "namespace"
+              target_label = "namespace"
             }
+
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_pod_name"]
-              target_label  = "pod_name"
+              target_label = "pod_name"
             }
+
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_pod_container_name"]
-              target_label  = "container_name"
+              target_label = "container_name"
             }
           }
 
@@ -261,21 +263,21 @@
             targets = discovery.kubernetes.pods.targets
 
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_namespace"]
-              target_label  = "namespace"
+              target_label = "namespace"
             }
 
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_pod_name"]
-              target_label  = "pod"
+              target_label = "pod"
             }
 
             rule {
-              action        = "replace"
+              action = "replace"
               source_labels = ["__meta_kubernetes_pod_container_name"]
-              target_label  = "container"
+              target_label = "container"
             }
 
             rule {
@@ -310,7 +312,7 @@
           }
 
           loki.source.kubernetes "pods" {
-            targets    = discovery.relabel.pod_logs.output
+            targets = discovery.relabel.pod_logs.output
             forward_to = [loki.write.endpoint.receiver]
           }
 
@@ -334,13 +336,13 @@
             targets = discovery.kubernetes.nodes.targets
             rule {
               target_label = "__address__"
-              replacement  = "kubernetes.default.svc.cluster.local:443"
+              replacement = "kubernetes.default.svc.cluster.local:443"
             }
             rule {
               source_labels = ["__meta_kubernetes_node_name"]
-              regex         = "(.+)"
-              replacement   = "/api/v1/nodes/''${1}/proxy/metrics/cadvisor"
-              target_label  = "__metrics_path__"
+              regex = "(.+)"
+              replacement = "/api/v1/nodes/''${1}/proxy/metrics/cadvisor"
+              target_label = "__metrics_path__"
             }
           }
 
