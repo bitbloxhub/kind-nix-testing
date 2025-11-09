@@ -27,7 +27,7 @@
           timeout = "1m0s";
           chart.spec = {
             chart = "forgejo";
-            version = "14.0.0";
+            version = "15.0.2";
             sourceRef = {
               kind = "HelmRepository";
               name = "forgejo-helm";
@@ -39,6 +39,10 @@
                 doCheck = false;
                 patches =
                   old.patches ++ (builtins.map (x: ./patches/${x}) (builtins.attrNames (builtins.readDir ./patches)));
+                postInstall = (old.postInstall or "") + ''
+                  # The helm chart expects this.
+                  mv $out/bin/forgejo $out/bin/gitea
+                '';
               });
             in
             {
@@ -46,6 +50,8 @@
               gitea.config.queue.TYPE = "channel";
               gitea.config.server.ENABLE_PPROF = true;
               gitea.metrics.enabled = true;
+              # The old default password
+              gitea.admin.password = "r8sA8CPHD9!bt6d";
               image.fullOverride = "nix:0${
                 inputs'.nix-snapshotter.packages.nix-snapshotter.buildImage {
                   name = "forgejo";
