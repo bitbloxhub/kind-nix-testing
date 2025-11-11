@@ -2,6 +2,7 @@
 
 allow_k8s_contexts("kind-kind-nix-testing")
 local_resource("kind-cluster", cmd="kind delete cluster -n kind-nix-testing && kind create cluster --config=kind.yaml")
+local_resource("kind-readwritemany", cmd="kubectl -n local-path-storage patch configmap local-path-config --patch-file ./readwritemany-patch.json")
 local_resource(
 	"kind-nix-testing-registry",
 	serve_cmd=" ".join([

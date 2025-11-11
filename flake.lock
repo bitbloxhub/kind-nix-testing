@@ -111,6 +111,26 @@
         "type": "github"
       }
     },
+    "nix-base64": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1753046609,
+        "narHash": "sha256-uUYmXy7Zc/DdEhO5eITXpdUu16MPWKjIrdyz8wCqS0g=",
+        "owner": "3nol",
+        "repo": "nix-base64",
+        "rev": "adf43deddca74c3c48c46ac6584eb1533b91825b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "3nol",
+        "repo": "nix-base64",
+        "type": "github"
+      }
+    },
     "nix-snapshotter": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -157,6 +177,7 @@
         "flake-parts": "flake-parts",
         "import-tree": "import-tree",
         "kubenix": "kubenix",
+        "nix-base64": "nix-base64",
         "nix-snapshotter": "nix-snapshotter",
         "nixpkgs": "nixpkgs",
         "treefmt-nix": "treefmt-nix"

@@ -18,6 +18,9 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-base64.url = "github:3nol/nix-base64";
+    nix-base64.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

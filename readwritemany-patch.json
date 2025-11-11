@@ -1,0 +1,5 @@
+{
+	"data": {
+		"config.json": "{\n\"sharedFileSystemPath\": \"/var/local-path-provisioner\"\n}"
+	}
+}
