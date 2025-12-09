@@ -48,7 +48,7 @@
                     hash = "sha256-sj7vPTr4Naix3eESQGHHNKnsi5Ij+1wWKtNG3zkDhJM=";
                   })
                   (pkgs.fetchurl {
-                    url = "https://github.com/grafana/grafana-operator/releases/v5.20.0/download/kustomize-cluster_scoped.yaml";
+                    url = "https://github.com/grafana/grafana-operator/releases/download/v5.20.0/kustomize-cluster_scoped.yaml";
                     hash = "sha256-/cB1kzXNYfFTFosmgW8bdSlPBMhs46Kaj+Jk5mbaxT8=";
                   })
                 ]
