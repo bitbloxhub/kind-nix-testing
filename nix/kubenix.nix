@@ -83,6 +83,48 @@
                     definitions
                     ;
 
+                  schemaType = schema:
+                    if (schema."x-kubernetes-int-or-string" or false) == true then lib.types.either lib.types.int lib.types.str
+                    else if schema ? oneOf || schema ? anyOf || schema ? allOf then lib.types.anything
+                    else if schema ? type then
+                      if schema.type == "string" then lib.types.str
+                      else if schema.type == "integer" || schema.type == "number" then lib.types.int
+                      else if schema.type == "boolean" then lib.types.bool
+                      else if schema.type == "array" then lib.types.listOf (schemaType (schema.items or { type = "object"; }))
+                      else if schema.type == "object" then
+                        if schema ? properties then
+                          lib.types.submodule ({ ... }:
+                            {
+                              options = schemaOptions schema;
+                            }
+                            // lib.optionalAttrs ((schema.additionalProperties or false) == true) {
+                              freeformType = lib.types.attrs;
+                            })
+                        else if schema ? additionalProperties && builtins.isAttrs schema.additionalProperties then
+                          lib.types.attrsOf (schemaType schema.additionalProperties)
+                        else lib.types.attrs
+                      else lib.types.anything
+                    else if schema ? properties then
+                      lib.types.submodule ({ ... }: {
+                        options = schemaOptions schema;
+                      })
+                    else lib.types.anything;
+
+                  schemaOptions = schema:
+                    let
+                      properties = schema.properties or { };
+                      required = schema.required or [ ];
+                    in
+                    builtins.mapAttrs (propName: propSchema:
+                      lib.mkOption {
+                        type =
+                          if builtins.elem propName required
+                          then schemaType propSchema
+                          else lib.types.nullOr (schemaType propSchema);
+                        default = null;
+                      }
+                    ) properties;
+
                   customTypes = builtins.map (crdVersion: {
                     inherit (crdVersion)
                       group
@@ -90,7 +132,10 @@
                       kind
                       attrName
                       ;
-                    module = lib.types.submodule definitions."${crdVersion.fqdn}";
+                    module = {
+                      options = schemaOptions (crdVersion.schema.properties.spec or { type = "object"; });
+                      freeformType = lib.types.attrs;
+                    };
                   }) schemasFlattened;
                 in
                 {
